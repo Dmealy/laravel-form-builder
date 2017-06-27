@@ -83,7 +83,16 @@ class FormBuilderServiceProvider extends ServiceProvider
 
         $form = $this->app['form'];
 
-        $form->macro('customLabel', function ($name, $value, $options = [], $escape_html = true) use ($form) {
+        $form->macro('customLabel', function ($name, $value, $options = []) use ($form) {
+            if (isset($options['for']) && $for = $options['for']) {
+                unset($options['for']);
+                return $form->label($for, $value, $options);
+            }
+
+            return $form->label($name, $value, $options);
+        });
+
+        $form->macro('htmlLabel', function ($name, $value, $options = [], $escape_html = false) use ($form) {
             if (isset($options['for']) && $for = $options['for']) {
                 unset($options['for']);
                 return $form->label($for, $value, $options, $escape_html);
